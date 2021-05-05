@@ -29,7 +29,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 # Performing grid search
 log_reg_params = {"penalty": ['l2'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}
 
-grid_log_reg = GridSearchCV(LogisticRegression(), log_reg_params)
+grid_log_reg = GridSearchCV(LogisticRegression(), log_reg_params, scoring = 'balanced_accuracy')
 grid_log_reg.fit(X_train, y_train)
 
 log_reg = grid_log_reg.best_estimator_
