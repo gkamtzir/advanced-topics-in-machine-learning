@@ -3,10 +3,10 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, \
-    precision_score, f1_score, recall_score, confusion_matrix
+    precision_score, f1_score, recall_score, confusion_matrix, roc_auc_score
 
 def load_data():
     # Loading data
@@ -41,6 +41,8 @@ def logistic_regression(X, y):
     log_reg = grid_log_reg.best_estimator_
     
     print(grid_log_reg.best_params_)
+    
+    print(cross_val_score(log_reg, X_train, y_train, cv = 5))
     
     y_pred = log_reg.predict(X_test)
     
@@ -77,6 +79,8 @@ def random_forest(X, y):
     
     print(grid.best_params_)
     
+    print(cross_val_score(random_forest, X_train, y_train, cv = 5))
+    
     y_pred = random_forest.predict(X_test)
     
     calculate_results(y_test, y_pred)
@@ -86,6 +90,8 @@ def explicit_random_forest(X, y):
     
     random_forest = RandomForestClassifier(criterion = "entropy", n_estimators = 10)
     random_forest.fit(X_train, y_train)
+    
+    print(cross_val_score(random_forest, X_train, y_train, cv = 5))
     
     y_pred = random_forest.predict(X_test)
     
@@ -98,6 +104,7 @@ def calculate_results(y_test, y_pred):
     precision = precision_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
+    auc = roc_auc_score(y_test, y_pred)
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     
     print(f"Accuracy: {accuracy}")
@@ -105,6 +112,7 @@ def calculate_results(y_test, y_pred):
     print(f"Precision: {precision}")
     print(f"F1: {f1}")
     print(f"Recall: {recall}")
+    print(f"AUC: {auc}")
     print(f"TP: {tp}")
     print(f"FP: {fp}")
     print(f"FN: {fn}")
