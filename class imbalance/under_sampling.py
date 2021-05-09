@@ -1,38 +1,21 @@
-from imblearn.under_sampling import RandomUnderSampler, NearMiss
-from utilities import load_data, logistic_regression, svc, random_forest, \
+from utilities import load_data, logistic_regression, random_forest, \
     explicit_random_forest
 
 # Loading data
 X, y = load_data()
 
 # Performing random under-sampling
-rus = RandomUnderSampler(random_state=0)
-X_resampled, y_resampled = rus.fit_resample(X, y)
-
-# Creating and evaluating the model
-logistic_regression(X_resampled, y_resampled)
-explicit_random_forest(X_resampled, y_resampled)
+logistic_regression(X, y, sampling = "under")
+explicit_random_forest(X, y, sampling = "under")
 
 # Performing NearMiss-1
-near_miss_1 = NearMiss(version = 1)
-X_resampled, y_resampled = near_miss_1.fit_resample(X, y)
-
-# Creating and evaluating the model
-logistic_regression(X_resampled, y_resampled)
-explicit_random_forest(X_resampled, y_resampled)
+logistic_regression(X, y, sampling = "near1")
+explicit_random_forest(X, y, sampling = "near1")
 
 # Performing NearMiss-2
-near_miss_2 = NearMiss(version = 2)
-X_resampled, y_resampled = near_miss_2.fit_resample(X, y)
-
-# Creating and evaluating the model
-logistic_regression(X_resampled, y_resampled)
-explicit_random_forest(X_resampled, y_resampled)
+logistic_regression(X, y, sampling = "near2")
+explicit_random_forest(X, y, sampling = "near2")
 
 # Performing NearMiss-3
-near_miss_3 = NearMiss(version = 3)
-X_resampled, y_resampled = near_miss_3.fit_resample(X, y)
-
-# Creating and evaluating the model
-logistic_regression(X_resampled, y_resampled)
-explicit_random_forest(X_resampled, y_resampled)
+logistic_regression(X, y, sampling = "near3")
+explicit_random_forest(X, y, sampling = "near3")

@@ -1,12 +1,13 @@
 import pandas as pd
 from sklearn.preprocessing import RobustScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, \
     precision_score, f1_score, recall_score, confusion_matrix, roc_auc_score
+from imblearn.over_sampling import RandomOverSampler, SMOTE, ADASYN
+from imblearn.under_sampling import RandomUnderSampler, NearMiss
 
 def load_data():
     # Loading data
@@ -23,14 +24,14 @@ def load_data():
     # Moving the 'Class' column to the end of the data frame
     class_column = data.pop('Class')
     data = pd.concat([data, class_column], 1)
-    
+        
     X = data.iloc[:, :-1]
     y = data.iloc[:, -1]
     
     return X, y
 
-def logistic_regression(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+def logistic_regression(X, y, sampling = None):
+    X_train, X_test, y_train, y_test = sample_data(X, y, sampling)
 
     # Performing grid search
     log_reg_params = {"penalty": ['l2'], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}
@@ -49,25 +50,8 @@ def logistic_regression(X, y):
     # Outputing the results
     calculate_results(y_test, y_pred)
     
-def svc(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
-    
-     # Performing grid search
-    svc_params = {"gamma": [0.001, 0.01, 0.1, 1, 10, 100], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 100]}
-    
-    grid = GridSearchCV(SVC(), svc_params, scoring = "balanced_accuracy")
-    grid.fit(X_train, y_train)
-    
-    svc = grid.best_estimator_
-    
-    print(grid.best_params_)
-    
-    y_pred = svc.predict(X_test)
-    
-    calculate_results(y_test, y_pred)
-    
-def random_forest(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+def random_forest(X, y, sampling = None):
+    X_train, X_test, y_train, y_test = sample_data(X, y, sampling)
     
     # Performing grid search
     random_forest_params = {"n_estimators": [10, 50, 100, 200, 300], "criterion": ["entropy", "gini"]}
@@ -85,8 +69,8 @@ def random_forest(X, y):
     
     calculate_results(y_test, y_pred)
     
-def explicit_random_forest(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+def explicit_random_forest(X, y, sampling = None):
+    X_train, X_test, y_train, y_test = sample_data(X, y, sampling)
     
     random_forest = RandomForestClassifier(criterion = "entropy", n_estimators = 10)
     random_forest.fit(X_train, y_train)
@@ -96,6 +80,46 @@ def explicit_random_forest(X, y):
     y_pred = random_forest.predict(X_test)
     
     calculate_results(y_test, y_pred)
+    
+def hybrid(X_train, y_train):    
+    under = RandomUnderSampler(sampling_strategy = 0.015)
+
+    X_train, y_train = under.fit_resample(X_train, y_train)
+    
+    over = SMOTE(sampling_strategy = 0.028)
+    
+    X_train, y_train = over.fit_resample(X_train, y_train)
+    
+    return X_train, y_train
+    
+def sample_data(X, y, sampling = None):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+    
+    if sampling == "over":
+        ros = RandomOverSampler(random_state = 0)
+        X_train, y_train = ros.fit_resample(X_train, y_train)
+    elif sampling == "under":
+        rus = RandomUnderSampler(random_state = 0)
+        X_train, y_train = rus.fit_resample(X_train, y_train)
+    elif sampling == "near1":
+        near_miss_1 = NearMiss(version = 1)
+        X_train, y_train = near_miss_1.fit_resample(X_train, y_train)
+    elif sampling == "near2":
+        near_miss_2 = NearMiss(version = 2)
+        X_train, y_train = near_miss_2.fit_resample(X_train, y_train)
+    elif sampling == "near3":
+        near_miss_3 = NearMiss(version = 3)
+        X_train, y_train = near_miss_3.fit_resample(X_train, y_train)
+    elif sampling == "smote":
+        smote = SMOTE(k_neighbors = 10, n_jobs = -1, random_state = 0)
+        X_train, y_train = smote.fit_resample(X_train, y_train)
+    elif sampling == "adasyn":
+        adasyn = ADASYN(n_neighbors = 10, n_jobs = -1, random_state = 0)
+        X_train, y_train = adasyn.fit_resample(X_train, y_train)
+    elif sampling == "hybrid":
+        X_train, y_train = hybrid(X_train, y_train)
+        
+    return X_train, X_test, y_train, y_test
     
 def calculate_results(y_test, y_pred):
     # Outputing the results
