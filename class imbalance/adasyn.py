@@ -1,5 +1,5 @@
 from imblearn.over_sampling import ADASYN
-from utilities import load_data, logistic_regression
+from utilities import load_data, logistic_regression, explicit_random_forest
 
 # Loading data
 X, y = load_data()
@@ -12,3 +12,4 @@ for neighbors in range(5, 50, 5):
     
     # Creating and evaluating the model
     logistic_regression(X_resampled, y_resampled)
+    explicit_random_forest(X_resampled, y_resampled)
