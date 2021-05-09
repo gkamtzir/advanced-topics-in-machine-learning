@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import RobustScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, \
@@ -38,9 +40,55 @@ def logistic_regression(X, y):
     
     log_reg = grid_log_reg.best_estimator_
     
+    print(grid_log_reg.best_params_)
+    
     y_pred = log_reg.predict(X_test)
     
     # Outputing the results
+    calculate_results(y_test, y_pred)
+    
+def svc(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+    
+     # Performing grid search
+    svc_params = {"gamma": [0.001, 0.01, 0.1, 1, 10, 100], 'C': [0.001, 0.01, 0.1, 1, 10, 100, 100]}
+    
+    grid = GridSearchCV(SVC(), svc_params, scoring = "balanced_accuracy")
+    grid.fit(X_train, y_train)
+    
+    svc = grid.best_estimator_
+    
+    print(grid.best_params_)
+    
+    y_pred = svc.predict(X_test)
+    
+    calculate_results(y_test, y_pred)
+    
+def random_forest(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+    
+    # Performing grid search
+    random_forest_params = {"n_estimators": [10, 50, 100, 200, 300], "criterion": ["entropy", "gini"]}
+    
+    grid = GridSearchCV(RandomForestClassifier(), random_forest_params, scoring = "balanced_accuracy")
+    grid.fit(X_train, y_train)
+    
+    random_forest = grid.best_estimator_
+    
+    print(grid.best_params_)
+    
+    y_pred = random_forest.predict(X_test)
+    
+    calculate_results(y_test, y_pred)
+    
+def explicit_random_forest(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+    
+    random_forest = RandomForestClassifier(criterion = "entropy", n_estimators = 10)
+    random_forest.fit(X_train, y_train)
+    
+    y_pred = random_forest.predict(X_test)
+    
     calculate_results(y_test, y_pred)
     
 def calculate_results(y_test, y_pred):
