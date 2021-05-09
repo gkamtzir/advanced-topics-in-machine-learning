@@ -1,0 +1,81 @@
+Scoring = None
+Accuracy: 0.9991222218320986
+Balanced Accuracy: 0.7907371903460314
+Precision: 0.8636363636363636
+F1: 0.6951219512195121
+Recall: 0.5816326530612245
+TP: 57
+FP: 9
+FN: 41
+TN: 56855
+
+Scoring = 'balanced_accuracy'
+Accuracy: 0.9991924440855307
+Balanced Accuracy: 0.8167525428084921
+Precision: 0.8767123287671232
+F1: 0.7356321839080459
+Recall: 0.6336633663366337
+TP: 64
+FP: 9
+FN: 37
+TN: 56852
+
+Scoring = 'balanced_accuracy'
+Random under-sampling
+Accuracy: 0.9238578680203046
+Balanced Accuracy: 0.9253576612067178
+Precision: 0.9504950495049505
+F1: 0.927536231884058
+Recall: 0.9056603773584906
+TP: 96
+FP: 5
+FN: 10
+TN: 86
+
+Scoring = 'balanced_accuracy'
+NearMiss 1
+Accuracy: 0.9593908629441624
+Balanced Accuracy: 0.9622641509433962
+Precision: 1.0
+F1: 0.9607843137254902
+Recall: 0.9245283018867925
+TP: 98
+FP: 0
+FN: 8
+TN: 91
+
+Scoring = 'balanced_accuracy'
+NearMiss 2
+Accuracy: 0.9543147208121827
+Balanced Accuracy: 0.9521044992743106
+Precision: 0.9369369369369369
+F1: 0.9585253456221199
+Recall: 0.9811320754716981
+TP: 104
+FP: 7
+FN: 2
+TN: 84
+
+Scoring = 'balanced_accuracy'
+NearMiss 3
+Accuracy: 0.7967032967032966
+Balanced Accuracy: 0.8029268292682927
+Precision: 0.8705882352941177
+F1: 0.7999999999999999
+Recall: 0.74
+TP: 74
+FP: 11
+FN: 26
+TN: 71
+
+Scoring = 'balanced_accuracy'
+Random over-sampling
+Accuracy: 0.9504774633768883
+Balanced Accuracy: 0.9505438004851199
+Precision: 0.9765129308745502
+F1: 0.9492173411238549
+Recall: 0.9234061962738149
+TP: 52636
+FP: 1266
+FN: 4366
+TN: 55458
